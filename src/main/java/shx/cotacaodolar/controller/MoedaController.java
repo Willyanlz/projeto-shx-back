@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import shx.cotacaodolar.service.MoedaService;
 
 @RestController
 @RequestMapping(value = "/")
+@CrossOrigin
 public class MoedaController {
 
     @Autowired
@@ -31,5 +33,10 @@ public class MoedaController {
     @GetMapping("/moeda/atual")
     public Moeda getCotacaoAtual() throws IOException, MalformedURLException, ParseException{
         return moedaService.getCotacaoAtual();
+    }
+
+    @GetMapping("/moeda/anterior")
+    public Moeda getCotacaoDiaAnterior() throws IOException, MalformedURLException, ParseException{
+        return moedaService.getCotacaoDiaAnterior();
     }
 }
