@@ -90,4 +90,33 @@ public class MoedaService {
 
         return moedaRef;
     }
+
+    public Moeda getCotacaoDiaAnterior() throws IOException, MalformedURLException, ParseException{
+        Periodo periodo = new Periodo(new SimpleDateFormat("MM-dd-yyyy").format(new Date()), new SimpleDateFormat("MM-dd-yyyy").format(new Date()));
+
+        String urlString = "CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?%40dataInicial='" + periodo.getDataInicial() + "'&%40dataFinalCotacao='" + periodo.getDataFinal() + "'&%24format=json&%24skip=0&%24top=" + periodo.getDiasEntreAsDatasMaisUm();
+
+        // String urlString = "CotacaoDolarDia(dataCotacao=@dataCotacao)?%40dataCotacao='" + new SimpleDateFormat("MM-dd-yyyy").format(new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000)) + "'&%24format=json";
+
+        URL url = new URL(apiUrl + urlString);
+        HttpURLConnection request = (HttpURLConnection)url.openConnection();
+        request.connect();
+
+        JsonElement response = JsonParser.parseReader(new InputStreamReader((InputStream)request.getContent()));
+        JsonObject rootObj = response.getAsJsonObject();
+        JsonArray cotacoes = rootObj.getAsJsonArray("value");
+
+        Moeda moedaRef = null;
+
+        for(JsonElement obj : cotacoes){
+            moedaRef = new Moeda();
+            Date data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(obj.getAsJsonObject().get("dataHoraCotacao").getAsString());
+
+            moedaRef.preco = obj.getAsJsonObject().get("cotacaoCompra").getAsDouble();
+            moedaRef.data = new SimpleDateFormat("dd/MM/yyyy").format(data);
+            moedaRef.hora = new SimpleDateFormat("HH:mm:ss").format(data);
+        }
+
+        return moedaRef;
+    }
 }

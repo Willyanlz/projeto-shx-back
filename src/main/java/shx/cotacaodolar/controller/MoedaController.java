@@ -32,4 +32,9 @@ public class MoedaController {
     public Moeda getCotacaoAtual() throws IOException, MalformedURLException, ParseException{
         return moedaService.getCotacaoAtual();
     }
+
+    @GetMapping("/moeda/anterior")
+    public Moeda getCotacaoDiaAnterior() throws IOException, MalformedURLException, ParseException{
+        return moedaService.getCotacaoDiaAnterior();
+    }
 }
