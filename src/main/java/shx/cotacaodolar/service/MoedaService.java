@@ -90,4 +90,33 @@ public class MoedaService {
 
         return moedaRef;
     }
+<<<<<<< Updated upstream
+=======
+
+    public Moeda getCotacaoDiaAnterior() throws IOException, MalformedURLException, ParseException{
+        Date ontem = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        String urlString = "CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?%40dataInicial='" + ontem + "'&%40dataFinalCotacao='" + ontem + "'&%24format=json&%24skip=0&%24top=" + 1;
+        
+        URL url = new URL(apiUrl + urlString);
+        HttpURLConnection request = (HttpURLConnection)url.openConnection();
+        request.connect();
+
+        JsonElement response = JsonParser.parseReader(new InputStreamReader((InputStream)request.getContent()));
+        JsonObject rootObj = response.getAsJsonObject();
+        JsonArray cotacoes = rootObj.getAsJsonArray("value");
+
+        Moeda moedaRef = null;
+
+        for(JsonElement obj : cotacoes){
+            moedaRef = new Moeda();
+            Date data = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(obj.getAsJsonObject().get("dataHoraCotacao").getAsString());
+
+            moedaRef.preco = obj.getAsJsonObject().get("cotacaoCompra").getAsDouble();
+            moedaRef.data = new SimpleDateFormat("dd/MM/yyyy").format(data);
+            moedaRef.hora = new SimpleDateFormat("HH:mm:ss").format(data);
+        }
+
+        return moedaRef;
+    }
+>>>>>>> Stashed changes
 }
