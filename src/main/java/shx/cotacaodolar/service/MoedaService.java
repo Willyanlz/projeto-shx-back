@@ -35,6 +35,9 @@ public class MoedaService {
 
         if(menorAtual){
             Moeda cotacaoAtual = getCotacaoAtual();
+            if (cotacaoAtual == null){
+                cotacaoAtual = getCotacaoDiaAnterior();
+            }
             urlString += "&%24filter=cotacaoCompra%20lt%20" + cotacaoAtual.preco;
         }
 
